@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        .item {
+            margin-left: 100px;
+        }
+
+        img {
+            width: 100px;
+            height: 150px;
+            margin: 0 50px;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="box">
+        <input type="checkbox" v-model="checkAll" @change="change">全选/全不选
+        <div v-for="item in dataList" :key="item.id" class="item">
+            <input type="checkbox" v-model='checkedList' :value="item" @change='itemChange'>
+            <img :src="item.pic" alt="" srcset=""/>
+            <span style="margin-right: 20px;">{{item.name}}</span>
+            <span style="margin-right: 20px;">{{item.price}}</span>
+            <button @click="item.number--" :disabled="item.number===1">-</button>
+            <span>{{item.number}}</span>
+            <button @click="item.number++" :disabled="item.number===item.limit" style="margin-right: 20px;">+</button>
+            <button @click="deleteItem(item.id)">删除</button>
+        </div>
+        总额：<span>{{sum}}</span>
+    </div>
+</body>
+<!-- <script src="./libs/vue.js"></script> -->
+<script src="./libs/vue.next.js"></script>
+<script type="">
+    var obj = {
+        data(){
+            console.log('执行')
+            return {
+                checkAll:false,
+                dataList:[
+                    {
+                        name:"商品1",
+                        price:10,
+                        number:3,
+                        id:1,
+                        limit:5,
+                        pic:"https://static.maizuo.com/pc/v5/usr/movie/44dc08914d508fc47c8267c6ca73f2d8.jpg"
+                    },
+                    {
+                        name:"商品2",
+                        price:20,
+                        number:4,
+                        id:2,
+                        limit:15,
+                        pic:"https://static.maizuo.com/pc/v5/usr/movie/44dc08914d508fc47c8267c6ca73f2d8.jpg"
+                    },
+                    {
+                        name:"商品3",
+                        price:30,
+                        number:3,
+                        id:3,
+                        limit:15,
+                        pic:"https://static.maizuo.com/pc/v5/usr/movie/44dc08914d508fc47c8267c6ca73f2d8.jpg"
+                    }
+                ],
+                checkedList:[]
+            }
+        },
+        methods:{
+            // sum(){
+            //     console.log('求和')
+            //     var sum = 0
+            //     // this.checkedList.forEach(item=>{
+            //     //     sum += item.number*item.price
+            //     // })
+            //     return sum
+            // },
+            deleteItem(id){
+                this.checkedList = this.checkedList.filter(item=>item.id!=id)
+                this.dataList = this.dataList.filter(item=>item.id!=id)
+                this.itemChange()
+            },
+            change(){
+                console.log('修改')
+                if(this.checkAll){
+                    this.checkedList = this.dataList
+                }else{
+                    this.checkedList = []
+                }
+            },
+            itemChange(){
+                if(this.checkedList.length == this.dataList.length){
+                    this.checkAll = true
+                }else{
+                    this.checkAll = false
+                }
+            }
+        },
+        computed:{
+            sum(){
+                console.log('计算属性')
+                var sum = 0
+                this.checkedList.forEach(item=>{
+                    sum += item.number*item.price
+                })
+                return sum
+            },
+        }
+    }
+    Vue.createApp(obj).mount("#box")
+</script>
+
+</html>
