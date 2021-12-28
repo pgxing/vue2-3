@@ -65,10 +65,13 @@
 </template>
 <script>
 import http from "@/utils/http";
+import obj from "@/utils/mixinsTab";
 import detailSwiper from "@/components/detail/detailSwiper.vue";
 import detailSwiperItem from "@/components/detail/detailSwiperItem.vue";
 import DetailHeader from "@/components/detail/detailHeader.vue";
+import { mapMutations } from "vuex";
 export default {
+  mixins: [obj],
   data() {
     return {
       id: null,
@@ -88,9 +91,10 @@ export default {
     });
   },
   methods: {
-    goBack(){
-      this.$router.back()
-    }
+    goBack() {
+      this.$router.back();
+    },
+    ...mapMutations(["showTabBar", "hideTabBar"]),
   },
   computed: {
     category() {
@@ -107,19 +111,18 @@ export default {
 <style lang="scss" scoped>
 .detail {
   background-color: #f4f4f4;
-  padding-bottom: 0.49rem;
-  .back{
+  .back {
     position: fixed;
-    top: .10rem;
-    left: .10rem;
+    top: 0.1rem;
+    left: 0.1rem;
     color: #fff;
-    height: .3rem;
-    width: .3rem;
+    height: 0.3rem;
+    width: 0.3rem;
     display: flex;
     justify-content: center;
     align-items: center;
-    border-radius: .3rem;
-    background-color: rgba(255,255,255,.5);
+    border-radius: 0.3rem;
+    background-color: rgba(255, 255, 255, 0.5);
   }
   .banner {
     height: 2.1rem;

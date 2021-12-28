@@ -1,7 +1,7 @@
 <template>
   <div class="film">
     <div class="city" @click="toCity">
-      <span>上海</span>
+      <span>{{ this.cityName }}</span>
       <van-icon name="arrow-down" size="10" />
     </div>
     <film-swiper :key="datalist.length">
@@ -22,6 +22,7 @@ import filmSwiperItem from "@/components/film/filmSwiperItem";
 import filmHeader from "@/components/film/filmHeader";
 import top from "@/components/top";
 import http from "@/utils/http";
+import { mapState } from "vuex";
 export default {
   data() {
     return {
@@ -59,6 +60,7 @@ export default {
     filmtopshow() {
       return this.screenHeight > 210;
     },
+    ...mapState(["cityName"]),
   },
 };
 </script>

@@ -2,7 +2,12 @@
   <div class="card">
     <div class="tit">{{ title }}</div>
     <div class="content">
-      <span v-for="item in cityList" :key="item">{{ item }}</span>
+      <span
+        v-for="item in cityList"
+        :key="item.cityId"
+        @click="clickCity(item)"
+        >{{ item.name }}</span
+      >
     </div>
   </div>
 </template>
@@ -18,6 +23,12 @@ export default {
       default: () => [],
     },
   },
+  methods: {
+    //点击事件，父组件传入
+    clickCity(item) {
+      this.$emit("clickCity", item);
+    },
+  },
 };
 </script>
 <style lang="scss" scoped>
@@ -28,11 +39,11 @@ export default {
     font-size: 0.13rem;
     color: #797d82;
   }
-/*
+  /*
 //根据显示屏的宽度，确定每个标签的宽度，按比例设置，不允许压缩
 例如，屏幕宽度是300px，那么如果需要放三列，那么每个元素占用的宽度应该是300px/3,为100px
 本例，是rem布局，所以按比例设置
-**/   
+**/
   .content {
     font-size: 0.14rem;
     color: #191a1b;

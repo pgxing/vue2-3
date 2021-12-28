@@ -17,8 +17,12 @@
       </div>
     </div>
     <div class="content">
-      <card title="GPS定位你所在的城市" :cityList="['上海']" />
-      <card title="热门城市" :cityList="hotCity" />
+      <card
+        title="GPS定位你所在的城市"
+        :cityList="[{ name: '上海', cityId: '310100' }]"
+        @clickCity="clickCity"
+      />
+      <card title="热门城市" :cityList="hotCity" @clickCity="clickCity" />
       <van-index-bar :index-list="computedList" @select="indexSelect">
         <div v-for="data in cityList" :key="data.type">
           <van-index-anchor :index="data.type" />
@@ -26,7 +30,7 @@
             v-for="item in data.list"
             :key="item.cityId"
             :title="item.name"
-            @click="clickCity(item.cityId)"
+            @click="clickCity(item)"
           />
         </div>
       </van-index-bar>
@@ -35,9 +39,11 @@
 </template>
 <script>
 import http from "@/utils/http";
+import obj from "@/utils/mixinsTab";
 import card from "@/components/city/card";
 import { Toast } from "vant";
 export default {
+  mixins: [obj],
   data() {
     return {
       cityList: [],
@@ -54,9 +60,7 @@ export default {
     }).then((res) => {
       let cities = res.data.data.cities;
       this.cityList = this.formatCity(cities);
-      this.hotCity = cities
-        .filter((item) => item.isHot === 1)
-        .map((i) => i.name);
+      this.hotCity = cities.filter((item) => item.isHot === 1);
     });
   },
   methods: {
@@ -94,8 +98,10 @@ export default {
         className: "indexToast",
       });
     },
-    clickCity(cityId) {
-      console.log(cityId);
+    clickCity(city) {
+      console.log(city);
+      this.$store.commit("changeCityName", city);
+      this.$router.back();
     },
   },
   computed: {

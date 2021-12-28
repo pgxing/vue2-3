@@ -9,6 +9,7 @@ import Comingsoon from '@/views/Film/Comingsoon'
 import Detail from '@/views/Detail'
 import Login from '@/views/Login'
 import City from '@/views/City'
+import Search from '@/views/Search'
 
 Vue.use(VueRouter)
 
@@ -53,6 +54,10 @@ const routes = [
   {
     path: '/city',
     component: City
+  },
+  {
+    path:'/search',
+    component:Search
   },
   {
     path: '/',

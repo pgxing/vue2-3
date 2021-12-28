@@ -1,30 +1,17 @@
 <template>
   <div>
-    <van-nav-bar
-      title="影院"
-      left-text="返回"
-      right-text="按钮"
-      left-arrow
-      @click-left="onClickLeft"
-      @click-right="onClickRight"
-    >
-      <template #left>
-        {{ $store.state.cityName
-        }}<van-icon name="arrow-down" color="#191a1b" size="12" />
-      </template>
-      <template #right>
-        <van-icon name="search" color="#191a1b" size="22" />
-      </template>
-    </van-nav-bar>
+    <van-search
+      v-model="value"
+      show-action
+      placeholder="请输入搜索关键词"
+      @input="onInput"
+      @cancel="onCancel"
+    />
     <!-- 视图窗口 -->
     <div class="cinemas">
       <!-- 滑动元素，必须 -->
-      <div>
-        <div
-          v-for="item in $store.state.cinemasList"
-          :key="item.name"
-          class="cinemasItem"
-        >
+      <div v-show="value">
+        <div v-for="item in computedList" :key="item.name" class="cinemasItem">
           <div class="titBox">
             <div class="tit">{{ item.name }}</div>
             <div class="price">
@@ -41,16 +28,20 @@
   </div>
 </template>
 <script>
-// import http from "@/utils/http";
 import BetterScroll from "better-scroll";
+import obj from "@/utils/mixinsTab";
 export default {
+  mixins: [obj],
   data() {
     return {
+      value: "",
       cinemasList: [],
     };
   },
   mounted() {
+    // 首次挂载时，判断所有电影院列表是否已经存在于store中
     if (!this.$store.state.cinemasList.length) {
+      //如果没有数据，dispatch发送请求，拿到请求结果后new betterScroll()
       this.$store.dispatch("getCinemas").then(() => {
         new BetterScroll(".cinemas", {
           movable: true,
@@ -58,26 +49,22 @@ export default {
         });
       });
     } else {
+      //如果已经有数据，只需要new betterScroll()
       new BetterScroll(".cinemas", {
         movable: true,
         zoom: true,
       });
     }
-
-    // http({
-    //   url: "/gateway?cityId=310100&ticketFlag=1&k=6173915",
-    //   headers: {
-    //     "X-Host": "mall.film-ticket.cinema.list",
-    //   },
-    // }).then((res) => {
-    //   this.cinemasList = res.data.data.cinemas;
-    //   this.$nextTick(() => {
-    //     new BetterScroll(".cinemas", {
-    //       movable: true,
-    //       zoom: true,
-    //     });
-    //   });
-    // });
+  },
+  updated() {
+    //每次搜索完成后，dom节点发生变化，重新new betterScroll()
+    if (this.computedList) {
+      console.log("betterScroll元素发生变化");
+      new BetterScroll(".cinemas", {
+        movable: true,
+        zoom: true,
+      });
+    }
   },
   computed: {
     computedPrice() {
@@ -85,14 +72,19 @@ export default {
         return `￥${val / 100}`;
       };
     },
+    computedList() {
+      return this.$store.state.cinemasList.filter((item) =>
+        item.name.toUpperCase().includes(this.value.toUpperCase())
+      );
+    },
   },
   methods: {
-    onClickLeft() {
-      this.$router.push("/city");
-      this.$store.commit('clearCniemasList')
+    onInput(val) {
+      //   console.log($store.state.cinemasList)
+      //   this.cinemasList = this.$store.state.cinemasList.filter(item=>item.includes())
     },
-    onClickRight() {
-      this.$router.push("/search");
+    onCancel() {
+      this.$router.back();
     },
   },
 };

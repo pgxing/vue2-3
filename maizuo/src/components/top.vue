@@ -2,7 +2,7 @@
   <div class="stickytop">
     <div class="title">
       <div class="left" @click="toCity">
-        上海
+        {{ cityName }}
         <van-icon name="arrow-down" />
       </div>
       <div class="tit">{{ title }}</div>
@@ -12,13 +12,17 @@
   </div>
 </template>
 <script>
+import { mapState } from "vuex";
 export default {
   props: ["title"],
-  methods:{
-    toCity(){
-      this.$router.push('/city')
-    }
-  }
+  methods: {
+    toCity() {
+      this.$router.push("/city");
+    },
+  },
+  computed: {
+    ...mapState(["cityName"]),
+  },
 };
 </script>
 <style lang="scss" scoped>
