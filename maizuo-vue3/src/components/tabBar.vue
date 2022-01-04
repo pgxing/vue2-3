@@ -46,7 +46,7 @@ export default {};
   z-index: 999;
   bottom: 0;
   font-size: 14px;
-  color: #797d82;
+  
   background-color: #fff;
   .navItem {
     width: 49px;
@@ -55,6 +55,9 @@ export default {};
     flex-direction: column;
     align-items: center;
     justify-content: center;
+  }
+  span{
+      color: #797d82;
   }
   img {
     width: 21px;

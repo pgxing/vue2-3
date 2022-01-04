@@ -3,7 +3,6 @@
     <film-item
       v-for="item in filmList"
       :key="item.filmId"
-      @click="gotoDetail(item)"
       :filmdata="item"
       type="2"
     ></film-item>

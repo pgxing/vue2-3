@@ -1,7 +1,7 @@
 module.exports = {
     lintOnSave:false,//暂时关闭代码格式检测,
     devServer:{
-        port:3001,
+        port:3002,
         //代理操作
         proxy:{
             //接头小暗号

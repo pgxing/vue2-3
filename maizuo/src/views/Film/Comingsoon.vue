@@ -3,7 +3,6 @@
     <film-item
       v-for="item in filmList"
       :key="item.filmId"
-      @click="gotoDetail(item)"
       :filmdata="item"
       type="2"
     ></film-item>
@@ -30,12 +29,6 @@ export default {
     }).then((res) => {
       this.filmList = res.data.data.films;
     });
-  },
-  methods: {
-    gotoDetail(id) {
-      this.$router.push("/detail/" + id);
-      console.log(this);
-    },
   },
 };
 </script>

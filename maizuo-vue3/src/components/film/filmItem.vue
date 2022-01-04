@@ -13,7 +13,7 @@
       <div v-if="type === '1'">
         {{ filmdata.nation }} | {{ filmdata.runtime }}分钟
       </div>
-      <!-- <div v-else>上映日期&nbsp;{{ filmdata.premiereAt | dateformat }}</div> -->
+      <div v-else>上映日期&nbsp;{{ computedDate(filmdata.premiereAt) }}</div>
     </div>
     <div class="btn">
       <span>{{ type === "1" ? "购票" : "预购" }}</span>
@@ -21,6 +21,7 @@
   </div>
 </template>
 <script>
+import moment from "moment";
 export default {
   props: ["type", "filmdata"],
   methods: {
@@ -33,6 +34,11 @@ export default {
       return this.filmdata.actors
         ? this.filmdata.actors.map((item) => item.name).join(" ")
         : "暂无";
+    },
+    computedDate() {
+      return (date) => {
+        return moment(date * 1000).format("YYYY-MM-DD");
+      };
     },
   },
 };

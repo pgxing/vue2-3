@@ -23,6 +23,7 @@ import filmItem from "@/components/film/filmItem";
 import { ref } from "vue";
 
 export default {
+  //vue3写法
   setup() {
     const loading = ref(false);
     const finished = ref(false);
@@ -63,6 +64,6 @@ export default {
   },
   components: {
     filmItem,
-  }
+  },
 };
 </script>

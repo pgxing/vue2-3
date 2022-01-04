@@ -1,10 +1,30 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import Films from './../views/Films.vue'
+import Center from '@/views/Center'
+import Films from '@/views/Films'
 import Showing from '@/views/Film/Showing'
 import Comingsoon from '@/views/Film/Comingsoon'
+import Detail from '@/views/Detail'
+import Login from '@/views/Login'
+import City from '@/views/City'
+import Search from '@/views/Search'
 
 
 const routes = [
+  {
+    path: '/login',
+    component: Login
+  },
+  {
+    path: '/center',
+    component: Center,
+    meta: {
+      islogin: true
+    }
+  },
+  {
+    path: '/cinemas',
+    component: () => import('@/views/Cinemas')
+  },
   {
     path: '/films',
     component: Films,
@@ -24,6 +44,18 @@ const routes = [
     ]
   },
   {
+    path: '/detail/:id',
+    component: Detail
+  },
+  {
+    path: '/city',
+    component: City
+  },
+  {
+    path: '/search',
+    component: Search
+  },
+  {
     path: '/',
     redirect: '/films'
   }
@@ -34,4 +66,11 @@ const router = createRouter({
   routes
 })
 
+router.beforeEach((to, from, next) => {
+  if (to.meta.islogin) {
+    next('/login')
+  } else {
+    next()
+  }
+})
 export default router

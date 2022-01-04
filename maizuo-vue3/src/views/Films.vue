@@ -10,9 +10,9 @@
       </film-swiper-item>
     </film-swiper>
     <film-header></film-header>
-    <!-- <top title="电影" v-scroll="210">
+    <top title="电影" v-scroll="210">
       <film-header></film-header>
-    </top> -->
+    </top>
     <router-view></router-view>
   </div>
 </template>
