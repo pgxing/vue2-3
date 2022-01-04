@@ -10,9 +10,9 @@
       </film-swiper-item>
     </film-swiper>
     <film-header></film-header>
-    <top title="电影" v-scroll="210">
+    <!-- <top title="电影" v-scroll="210">
       <film-header></film-header>
-    </top>
+    </top> -->
     <router-view></router-view>
   </div>
 </template>
@@ -31,12 +31,14 @@ export default {
     };
   },
   mounted() {
+      console.log('挂载完毕')
     http({
       url: "/gateway?type=2&cityId=310100&k=9863121",
       headers: {
         "X-Host": "mall.cfg.common-banner",
       },
     }).then((res) => {
+        console.log(res)
       this.datalist = res.data.data;
     });
     // window.addEventListener("scroll", this.handleScroll);

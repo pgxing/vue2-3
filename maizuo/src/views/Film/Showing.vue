@@ -45,14 +45,14 @@ export default {
         this.loading = false;
         this.filmList = [...this.filmList, ...res.data.data.films];
         this.total = res.data.data.total;
+        //页码++
+        this.current++;
       });
     },
     //触底时触发
     onLoad() {
       //当前数据总长度小于数据总数时，继续加载数据，否则修改finised为true
       if (this.filmList.length < this.total) {
-        //页码++
-        this.current++;
         this.getData();
       } else {
         this.finished = true;

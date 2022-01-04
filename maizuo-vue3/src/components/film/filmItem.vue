@@ -30,7 +30,9 @@ export default {
   },
   computed: {
     setActor() {
-      return this.filmdata.actors.map((item) => item.name).join(" ");
+      return this.filmdata.actors
+        ? this.filmdata.actors.map((item) => item.name).join(" ")
+        : "暂无";
     },
   },
 };
@@ -49,7 +51,7 @@ export default {
   }
   .detail {
     width: calc(100% - 1.16rem);
-    height: 0.90rem;
+    height: 0.9rem;
     color: #797d82;
     padding: 0 0.1rem;
     display: flex;

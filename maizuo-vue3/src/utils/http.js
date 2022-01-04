@@ -1,7 +1,7 @@
 import axios from 'axios';
-import { Toast } from 'vant';
-import Vue from 'vue';
-Vue.use(Toast)
+// import { Toast } from 'vant';
+// import Vue from 'vue';
+// Vue.use(Toast)
 const http = axios.create({
   baseURL: '/dev',
   timeout: 10000,
@@ -12,11 +12,12 @@ const http = axios.create({
 // Add a request interceptor
 http.interceptors.request.use(function (config) {
   // Do something before request is sent
-  Toast.loading({
-    duration:0,
-    message: '加载中...',
-    forbidClick: true,
-  });
+//   Toast.loading({
+//     duration:0,
+//     message: '加载中...',
+//     forbidClick: true,
+//   });
+console.log('发送请求')
   return config;
 }, function (error) {
   // Do something with request error
@@ -27,7 +28,7 @@ http.interceptors.request.use(function (config) {
 http.interceptors.response.use(function (response) {
   // Any status code that lie within the range of 2xx cause this function to trigger
   // Do something with response data
-  Toast.clear()
+//   Toast.clear()
   return response;
 }, function (error) {
   // Any status codes that falls outside the range of 2xx cause this function to trigger
