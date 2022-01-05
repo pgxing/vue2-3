@@ -20,7 +20,7 @@
 <script>
 import http from "@/utils/http";
 import filmItem from "@/components/film/filmItem";
-import { ref } from "vue";
+import { ref, onMounted } from "vue";
 
 export default {
   //vue3写法
@@ -46,7 +46,10 @@ export default {
         current.value++;
       });
     };
-    getData();
+    onMounted(() => {
+      getData();
+    });
+
     const onLoad = () => {
       //当前数据总长度小于数据总数时，继续加载数据，否则修改finised为true
       if (filmList.value.length < total.value) {

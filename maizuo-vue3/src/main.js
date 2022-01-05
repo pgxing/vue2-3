@@ -1,6 +1,7 @@
 import { createApp } from 'vue'
 import { Icon, IndexAnchor, IndexBar, Cell, List, NavBar, Search, Col, Row,Toast } from 'vant';
 import App from './App.vue'
+// import App from './base/09-app.vue'
 import router from './router'
 import store from './store'
 
