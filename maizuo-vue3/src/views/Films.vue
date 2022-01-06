@@ -4,8 +4,8 @@
       <span>{{ this.cityName }}</span>
       <van-icon name="arrow-down" size="10" />
     </div>
-    <film-swiper :key="datalist.length">
-      <film-swiper-item v-for="item in datalist" :key="item.bannerId">
+    <film-swiper :key="state.datalist.length">
+      <film-swiper-item v-for="item in state.datalist" :key="item.bannerId">
         <img class="banner" :src="item.imgUrl" alt="" srcset="" />
       </film-swiper-item>
     </film-swiper>
@@ -17,54 +17,98 @@
   </div>
 </template>
 <script>
+// vue3 函数式写法
+import { computed, onMounted, reactive } from "vue";
+import { useRouter } from "vue-router";
+import { useStore } from "vuex";
 import filmSwiper from "@/components/film/filmSwiper";
 import filmSwiperItem from "@/components/film/filmSwiperItem";
 import filmHeader from "@/components/film/filmHeader";
 import top from "@/components/top";
 import http from "./../utils/http";
-import { mapState } from "vuex";
 export default {
-  data() {
-    return {
-      datalist: [],
-      screenHeight: 0,
-    };
-  },
-  mounted() {
-      console.log('挂载完毕')
-    http({
-      url: "/gateway?type=2&cityId=310100&k=9863121",
-      headers: {
-        "X-Host": "mall.cfg.common-banner",
-      },
-    }).then((res) => {
-        console.log(res)
-      this.datalist = res.data.data;
-    });
-    // window.addEventListener("scroll", this.handleScroll);
-  },
-  methods: {
-    handleScroll() {
-      this.screenHeight =
-        document.documentElement.scrollTop || document.body.scrollTop;
-    },
-    toCity() {
-      this.$router.push("/city");
-    },
-  },
   components: {
     filmSwiper,
     filmSwiperItem,
     filmHeader,
     top,
   },
-  computed: {
-    filmtopshow() {
-      return this.screenHeight > 210;
-    },
-    ...mapState(["cityName"]),
+  setup() {
+    const store = useStore();
+    const router = useRouter();
+    const state = reactive({
+      datalist: [],
+      screenHeight: 0,
+    });
+    const toCity = () => {
+      router.push("/city");
+    };
+    onMounted(() => {
+      http({
+        url: "/gateway?type=2&cityId=310100&k=9863121",
+        headers: {
+          "X-Host": "mall.cfg.common-banner",
+        },
+      }).then((res) => {
+        state.datalist = res.data.data;
+      });
+    });
+    return {
+      state,
+      cityName: computed(() => store.state.cityName),
+      toCity,
+    };
   },
 };
+// vue2-vue3 类组件写法
+// import filmSwiper from "@/components/film/filmSwiper";
+// import filmSwiperItem from "@/components/film/filmSwiperItem";
+// import filmHeader from "@/components/film/filmHeader";
+// import top from "@/components/top";
+// import http from "./../utils/http";
+// import { mapState } from "vuex";
+// export default {
+//   data() {
+//     return {
+//       datalist: [],
+//       screenHeight: 0,
+//     };
+//   },
+//   mounted() {
+//       console.log('挂载完毕')
+//     http({
+//       url: "/gateway?type=2&cityId=310100&k=9863121",
+//       headers: {
+//         "X-Host": "mall.cfg.common-banner",
+//       },
+//     }).then((res) => {
+//         console.log(res)
+//       this.datalist = res.data.data;
+//     });
+//     // window.addEventListener("scroll", this.handleScroll);
+//   },
+//   methods: {
+//     handleScroll() {
+//       this.screenHeight =
+//         document.documentElement.scrollTop || document.body.scrollTop;
+//     },
+//     toCity() {
+//       this.$router.push("/city");
+//     },
+//   },
+//   components: {
+//     filmSwiper,
+//     filmSwiperItem,
+//     filmHeader,
+//     top,
+//   },
+//   computed: {
+//     filmtopshow() {
+//       return this.screenHeight > 210;
+//     },
+//     ...mapState(["cityName"]),
+//   },
+// };
 </script>
 <style lang="scss" scoped>
 .film {

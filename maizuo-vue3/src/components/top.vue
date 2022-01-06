@@ -12,18 +12,37 @@
   </div>
 </template>
 <script>
-import { mapState } from "vuex";
+//vue3 函数式组件写法
+import { computed } from "vue";
+import { useRouter } from "vue-router";
+import { useStore } from "vuex";
 export default {
   props: ["title"],
-  methods: {
-    toCity() {
-      this.$router.push("/city");
-    },
-  },
-  computed: {
-    ...mapState(["cityName"]),
+  setup() {
+    const store = useStore();
+    const router = useRouter;
+    const toCity = () => {
+      router.push("/city");
+    };
+    return {
+      toCity,
+      cityName: computed(() => store.state.cityName),
+    };
   },
 };
+// vue2-vue3 类组件写法
+// import { mapState } from "vuex";
+// export default {
+//   props: ["title"],
+//   methods: {
+//     toCity() {
+//       this.$router.push("/city");
+//     },
+//   },
+//   computed: {
+//     ...mapState(["cityName"]),
+//   },
+// };
 </script>
 <style lang="scss" scoped>
 .stickytop {

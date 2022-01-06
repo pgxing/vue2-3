@@ -8,7 +8,7 @@
       </van-nav-bar>
       <div class="search">
         <van-search
-          v-model="value"
+          v-model="state.value"
           :show-action="showAction"
           placeholder="请输入城市名称或拼音"
           @input="onInput"
@@ -22,9 +22,9 @@
         :cityList="[{ name: '上海', cityId: '310100' }]"
         @clickCity="clickCity"
       />
-      <card title="热门城市" :cityList="hotCity" @clickCity="clickCity" />
+      <card title="热门城市" :cityList="state.hotCity" @clickCity="clickCity" />
       <van-index-bar :index-list="computedList" @select="indexSelect">
-        <div v-for="data in cityList" :key="data.type">
+        <div v-for="data in state.cityList" :key="data.type">
           <van-index-anchor :index="data.type" />
           <van-cell
             v-for="item in data.list"
@@ -38,33 +38,28 @@
   </div>
 </template>
 <script>
+//vue3 函数式组件
+import { reactive, onMounted, computed } from "vue";
+import { useRouter } from "vue-router";
+import { useStore } from "vuex";
 import http from "@/utils/http";
 import obj from "@/utils/mixinsTab";
 import card from "@/components/city/card";
 import { Toast } from "vant";
 export default {
+  components: {
+    card,
+  },
   mixins: [obj],
-  data() {
-    return {
+  setup() {
+    const router = useRouter();
+    const store = useStore();
+    const state = reactive({
       cityList: [],
       value: "",
       hotCity: [],
-    };
-  },
-  mounted() {
-    http({
-      url: "/gateway?k=6213424",
-      headers: {
-        "X-Host": "mall.film-ticket.city.list",
-      },
-    }).then((res) => {
-      let cities = res.data.data.cities;
-      this.cityList = this.formatCity(cities);
-      this.hotCity = cities.filter((item) => item.isHot === 1);
     });
-  },
-  methods: {
-    formatCity(data) {
+    const formatCity = (data) => {
       //生成26个英文字母
       let letterList = [],
         cityList = [];
@@ -84,38 +79,125 @@ export default {
           });
       });
       return cityList;
-    },
-    onClickLeft() {
-      this.$router.back();
-    },
-    onInput(val) {
-      console.log(val);
-    },
-    onCancel() {},
-    indexSelect(index) {
+    };
+    const onClickLeft = () => {
+      router.back();
+    };
+    const indexSelect = (index) => {
       Toast({
         message: index,
         className: "indexToast",
       });
-    },
-    clickCity(city) {
-      console.log(city);
-      this.$store.commit("changeCityName", city);
-      this.$router.back();
-    },
-  },
-  computed: {
-    computedList() {
-      return this.cityList.map((item) => item.type);
-    },
-    showAction() {
-      return this.value != "";
-    },
-  },
-  components: {
-    card,
+    };
+    const clickCity = (city) => {
+      store.commit("changeCityName", city);
+      router.back();
+    };
+    onMounted(() => {
+      http({
+        url: "/gateway?k=6213424",
+        headers: {
+          "X-Host": "mall.film-ticket.city.list",
+        },
+      }).then((res) => {
+        let cities = res.data.data.cities;
+        state.cityList = formatCity(cities);
+        state.hotCity = cities.filter((item) => item.isHot === 1);
+      });
+    });
+    const computedList = computed(() =>
+      state.cityList.map((item) => item.type)
+    );
+    const showAction = computed(() => state.value != "");
+    return {
+      state,
+      onClickLeft,
+      indexSelect,
+      clickCity,
+      computedList,
+      showAction,
+    };
   },
 };
+//vue2-3 类组件写法
+// import http from "@/utils/http";
+// import obj from "@/utils/mixinsTab";
+// import card from "@/components/city/card";
+// import { Toast } from "vant";
+// export default {
+//   mixins: [obj],
+//   data() {
+//     return {
+//       cityList: [],
+//       value: "",
+//       hotCity: [],
+//     };
+//   },
+//   mounted() {
+//     http({
+//       url: "/gateway?k=6213424",
+//       headers: {
+//         "X-Host": "mall.film-ticket.city.list",
+//       },
+//     }).then((res) => {
+//       let cities = res.data.data.cities;
+//       this.cityList = this.formatCity(cities);
+//       this.hotCity = cities.filter((item) => item.isHot === 1);
+//     });
+//   },
+//   methods: {
+//     formatCity(data) {
+//       //生成26个英文字母
+//       let letterList = [],
+//         cityList = [];
+//       for (var i = 65; i < 91; i++) {
+//         letterList.push(String.fromCharCode(i));
+//       }
+//       //遍历、按首字母对城市进行过滤
+//       letterList.forEach((item) => {
+//         //分别按字母过滤后的城市list
+//         let list = data.filter(
+//           (i) => i.pinyin.substring(0, 1).toUpperCase() === item
+//         );
+//         list.length > 0 &&
+//           cityList.push({
+//             type: item,
+//             list,
+//           });
+//       });
+//       return cityList;
+//     },
+//     onClickLeft() {
+//       this.$router.back();
+//     },
+//     onInput(val) {
+//       console.log(val);
+//     },
+//     onCancel() {},
+//     indexSelect(index) {
+//       Toast({
+//         message: index,
+//         className: "indexToast",
+//       });
+//     },
+//     clickCity(city) {
+//       console.log(city);
+//       this.$store.commit("changeCityName", city);
+//       this.$router.back();
+//     },
+//   },
+//   computed: {
+//     computedList() {
+//       return this.cityList.map((item) => item.type);
+//     },
+//     showAction() {
+//       return this.value != "";
+//     },
+//   },
+//   components: {
+//     card,
+//   },
+// };
 </script>
 <style lang="scss" scoped>
 .city {

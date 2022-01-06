@@ -24,6 +24,9 @@ import { ref, onMounted } from "vue";
 
 export default {
   //vue3写法
+    components: {
+    filmItem,
+  },
   setup() {
     const loading = ref(false);
     const finished = ref(false);
@@ -64,9 +67,6 @@ export default {
       loading,
       finished,
     };
-  },
-  components: {
-    filmItem,
-  },
+  }
 };
 </script>

@@ -64,55 +64,107 @@
   </div>
 </template>
 <script>
+import { reactive, ref, onMounted, toRefs, computed } from "vue";
+import { useRoute, useRouter } from "vue-router";
 import http from "@/utils/http";
 import obj from "@/utils/mixinsTab";
 import detailSwiper from "@/components/detail/detailSwiper.vue";
 import detailSwiperItem from "@/components/detail/detailSwiperItem.vue";
 import DetailHeader from "@/components/detail/detailHeader.vue";
-import { mapMutations } from "vuex";
 import moment from "moment";
 export default {
   mixins: [obj],
-  data() {
-    return {
-      id: null,
-      film: {},
-      open: false,
-    };
-  },
-  mounted() {
-    this.id = this.$route.params.id;
-    http({
-      url: `/gateway?filmId=${this.id}&k=4286359`,
-      headers: {
-        "X-Host": "mall.film-ticket.film.info",
-      },
-    }).then((res) => {
-      this.film = res.data.data.film;
-    });
-  },
-  methods: {
-    goBack() {
-      this.$router.back();
-    },
-    ...mapMutations(["showTabBar", "hideTabBar"]),
-  },
-  computed: {
-    category() {
-      return this.film.category.replaceAll("|", " | ");
-    },
-    computedDate() {
-      return (date) => {
-        return moment(date * 1000).format("YYYY-MM-DD");
-      };
-    },
-  },
   components: {
     detailSwiper,
     detailSwiperItem,
     DetailHeader,
   },
+  setup() {
+    const route = useRoute();
+    const router = useRouter();
+    const id = ref(null);
+    const open = ref(false);
+    const state = reactive({
+      film: {},
+    });
+    const goBack = () => {
+      router.back();
+    };
+    const category = computed(() => state.film.category.replaceAll("|", " | "));
+    const computedDate = computed(() => (date) => {
+      return moment(date * 1000).format("YYYY-MM-DD");
+    });
+    onMounted(() => {
+      id.value = route.params.id;
+      http({
+        url: `/gateway?filmId=${id.value}&k=4286359`,
+        headers: {
+          "X-Host": "mall.film-ticket.film.info",
+        },
+      }).then((res) => {
+        state.film = res.data.data.film;
+      });
+    });
+    return {
+      open,
+      ...toRefs(state),
+      goBack,
+      category,
+      computedDate,
+    };
+  },
 };
+// vue3 函数式组件写法
+// vue2-vue3 类组件写法
+// import http from "@/utils/http";
+// import obj from "@/utils/mixinsTab";
+// import detailSwiper from "@/components/detail/detailSwiper.vue";
+// import detailSwiperItem from "@/components/detail/detailSwiperItem.vue";
+// import DetailHeader from "@/components/detail/detailHeader.vue";
+// import { mapMutations } from "vuex";
+// import moment from "moment";
+// export default {
+//   mixins: [obj],
+//   data() {
+//     return {
+//       id: null,
+//       film: {},
+//       open: false,
+//     };
+//   },
+//   mounted() {
+//     this.id = this.$route.params.id;
+//     http({
+//       url: `/gateway?filmId=${this.id}&k=4286359`,
+//       headers: {
+//         "X-Host": "mall.film-ticket.film.info",
+//       },
+//     }).then((res) => {
+//       this.film = res.data.data.film;
+//     });
+//   },
+//   methods: {
+//     goBack() {
+//       this.$router.back();
+//     },
+//     ...mapMutations(["showTabBar", "hideTabBar"]),
+//   },
+//   computed: {
+//     category() {
+//       return this.film.category.replaceAll("|", " | ");
+//     },
+//     computedDate() {
+//       return (date) => {
+//         return moment(date * 1000).format("YYYY-MM-DD");
+//       };
+//     },
+//   },
+//   components: {
+//     detailSwiper,
+//     detailSwiperItem,
+//     DetailHeader,
+//   },
+// };
 </script>
 <style lang="scss" scoped>
 .detail {

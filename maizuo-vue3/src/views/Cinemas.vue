@@ -41,61 +41,91 @@
   </div>
 </template>
 <script>
-// import http from "@/utils/http";
+//vue3-函数组件
+import { onMounted, computed } from "vue";
+import { useStore } from "vuex";
+import { useRouter } from "vue-router";
 import BetterScroll from "better-scroll";
 export default {
-  data() {
-    return {
-      cinemasList: [],
-    };
-  },
-  mounted() {
-    if (!this.$store.state.cinemasList.length) {
-      this.$store.dispatch("getCinemas").then(() => {
+  setup() {
+    const store = useStore();
+    const router = useRouter();
+    onMounted(() => {
+      if (!store.state.cinemasList.length) {
+        store.dispatch("getCinemas").then(() => {
+          new BetterScroll(".cinemas", {
+            movable: true,
+            zoom: true,
+          });
+        });
+      } else {
         new BetterScroll(".cinemas", {
           movable: true,
           zoom: true,
         });
-      });
-    } else {
-      new BetterScroll(".cinemas", {
-        movable: true,
-        zoom: true,
-      });
-    }
-
-    // http({
-    //   url: "/gateway?cityId=310100&ticketFlag=1&k=6173915",
-    //   headers: {
-    //     "X-Host": "mall.film-ticket.cinema.list",
-    //   },
-    // }).then((res) => {
-    //   this.cinemasList = res.data.data.cinemas;
-    //   this.$nextTick(() => {
-    //     new BetterScroll(".cinemas", {
-    //       movable: true,
-    //       zoom: true,
-    //     });
-    //   });
-    // });
-  },
-  computed: {
-    computedPrice() {
+      }
+    });
+    const computedPrice = computed(() => {
       return (val) => {
         return `￥${val / 100}`;
       };
-    },
-  },
-  methods: {
-    onClickLeft() {
-      this.$router.push("/city");
-      this.$store.commit('clearCniemasList')
-    },
-    onClickRight() {
-      this.$router.push("/search");
-    },
+    });
+    const onClickLeft = () => {
+      router.push("/city");
+      store.commit("clearCniemasList");
+    };
+    const onClickRight = () => {
+      router.push("/search");
+    };
+    return {
+      computedPrice,
+      cityName: computed(() => store.state.cityName),
+      cinemasList: computed(() => store.state.cinemasList),
+      onClickLeft,
+      onClickRight,
+    };
   },
 };
+//类组件
+// import BetterScroll from "better-scroll";
+// export default {
+//   data() {
+//     return {
+//       cinemasList: [],
+//     };
+//   },
+//   mounted() {
+//     if (!this.$store.state.cinemasList.length) {
+//       this.$store.dispatch("getCinemas").then(() => {
+//         new BetterScroll(".cinemas", {
+//           movable: true,
+//           zoom: true,
+//         });
+//       });
+//     } else {
+//       new BetterScroll(".cinemas", {
+//         movable: true,
+//         zoom: true,
+//       });
+//     }
+//   },
+//   computed: {
+//     computedPrice() {
+//       return (val) => {
+//         return `￥${val / 100}`;
+//       };
+//     },
+//   },
+//   methods: {
+//     onClickLeft() {
+//       this.$router.push("/city");
+//       this.$store.commit('clearCniemasList')
+//     },
+//     onClickRight() {
+//       this.$router.push("/search");
+//     },
+//   },
+// };
 </script>
 <style lang="scss" scoped>
 .cinemas {

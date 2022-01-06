@@ -12,6 +12,7 @@
   </div>
 </template>
 <script>
+// vue3 函数式写法
 export default {
   props: {
     title: {
@@ -23,13 +24,35 @@ export default {
       default: () => [],
     },
   },
-  methods: {
+  setup(props, { emit }) {
     //点击事件，父组件传入
-    clickCity(item) {
-      this.$emit("clickCity", item);
-    },
+    const clickCity = (item) => {
+      emit("clickCity", item);
+    };
+    return {
+      clickCity,
+    };
   },
 };
+// vue2-vue3 类组件写法
+// export default {
+//   props: {
+//     title: {
+//       type: String,
+//       default: "",
+//     },
+//     cityList: {
+//       type: Array,
+//       default: () => [],
+//     },
+//   },
+//   methods: {
+//     //点击事件，父组件传入
+//     clickCity(item) {
+//       this.$emit("clickCity", item);
+//     },
+//   },
+// };
 </script>
 <style lang="scss" scoped>
 .card {

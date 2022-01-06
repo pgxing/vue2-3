@@ -10,14 +10,29 @@
   </div>
 </template>
 <script>
+// vue3 函数式组件写法
+import { useRouter } from "vue-router";
 export default {
   props: ["title"],
-  methods: {
-    goBack() {
-      this.$router.back();
-    },
+  setup() {
+    const router = useRouter();
+    const goBack = () => {
+      router.back();
+    };
+    return {
+      goBack,
+    };
   },
 };
+// vue2-vue3 类组件写法
+// export default {
+//   props: ["title"],
+//   methods: {
+//     goBack() {
+//       this.$router.back();
+//     },
+//   },
+// };
 </script>
 <style lang="scss" scoped>
 .stickytop {

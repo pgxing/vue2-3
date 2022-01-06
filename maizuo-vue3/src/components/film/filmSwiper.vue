@@ -12,19 +12,22 @@
   </div>
 </template>
 <script>
+import { onMounted } from "vue";
 import Swiper from "swiper/swiper-bundle";
 // import 'swiper/swiper.min.css'
 import "swiper/swiper-bundle.min.css";
 export default {
-  mounted() {
-    new Swiper(".swiper", {
-      pagination: {
-        el: ".swiper-pagination",
-      },
-      navigation: {
-        nextEl: ".swiper-button-next",
-        prevEl: ".swiper-button-prev",
-      },
+  setup() {
+    onMounted(() => {
+      new Swiper(".swiper", {
+        pagination: {
+          el: ".swiper-pagination",
+        },
+        navigation: {
+          nextEl: ".swiper-button-next",
+          prevEl: ".swiper-button-prev",
+        },
+      });
     });
   },
 };

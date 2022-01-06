@@ -16,6 +16,9 @@
   display: flex;
   justify-content: space-around;
   font-size: 0.14rem;
+  span {
+    color: #191a1b;
+  }
   .active {
     display: inline-block;
     width: 0.56rem;

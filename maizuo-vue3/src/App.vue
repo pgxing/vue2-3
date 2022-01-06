@@ -6,15 +6,22 @@
 </template>
 
 <script>
+import { computed } from "vue";
 import tabBar from "@/components/tabBar";
-import { mapState } from "vuex";
+import { useStore } from "vuex";
 export default {
   components: {
     tabBar,
   },
-  computed: {
-    ...mapState(["isShowTabBar"]),
+  setup() {
+    const store = useStore();
+    return {
+      isShowTabBar: computed(() => store.state.isShowTabBar),
+    };
   },
+  // computed: {
+  //   ...mapState(["isShowTabBar"]),
+  // },
 };
 </script>
 

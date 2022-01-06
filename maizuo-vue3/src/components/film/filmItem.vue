@@ -1,5 +1,5 @@
 <template>
-  <div class="filmItem" @click="gotoDetail(filmdata.filmId)">
+  <div v-if="filmdata" class="filmItem" @click="gotoDetail(filmdata.filmId)">
     <img :src="filmdata.poster" alt="" srcset="" />
     <div class="detail">
       <div class="title">
@@ -21,27 +21,55 @@
   </div>
 </template>
 <script>
+// vue3 函数式组件写法
+import { computed } from "vue";
 import moment from "moment";
+import { useRouter } from "vue-router";
 export default {
   props: ["type", "filmdata"],
-  methods: {
-    gotoDetail(id) {
-      this.$router.push("/detail/" + id);
-    },
-  },
-  computed: {
-    setActor() {
-      return this.filmdata.actors
-        ? this.filmdata.actors.map((item) => item.name).join(" ")
+  setup(props) {
+    const router = useRouter();
+    const gotoDetail = (id) => {
+      router.push("/detail/" + id);
+    };
+    const setActor = computed(() => {
+      //避免解构props,防止失去响应性，可以使用toRefs/toRef
+      return props.filmdata.actors
+        ? props.filmdata.actors.map((item) => item.name).join(" ")
         : "暂无";
-    },
-    computedDate() {
-      return (date) => {
-        return moment(date * 1000).format("YYYY-MM-DD");
-      };
-    },
+    });
+    const computedDate = computed(() => (date) => {
+      return moment(date * 1000).format("YYYY-MM-DD");
+    });
+    return {
+      gotoDetail,
+      setActor,
+      computedDate,
+    };
   },
 };
+// vue2-vue3 类组件写法
+// import moment from "moment";
+// export default {
+//   props: ["type", "filmdata"],
+//   methods: {
+//     gotoDetail(id) {
+//       this.$router.push("/detail/" + id);
+//     },
+//   },
+//   computed: {
+//     setActor() {
+//       return this.filmdata.actors
+//         ? this.filmdata.actors.map((item) => item.name).join(" ")
+//         : "暂无";
+//     },
+//     computedDate() {
+//       return (date) => {
+//         return moment(date * 1000).format("YYYY-MM-DD");
+//       };
+//     },
+//   },
+// };
 </script>
 <style lang="scss">
 .filmItem {

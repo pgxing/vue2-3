@@ -6,13 +6,10 @@
 export default {
   props: ["myname", "isShow"],
   setup(props, { emit }) {
-    const { myname, isShow } = props;
     const showOrHide = () => {
       emit("event");
     };
     return {
-      myname,
-      isShow,
       showOrHide,
     };
   },
